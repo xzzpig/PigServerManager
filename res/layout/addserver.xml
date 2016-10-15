@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+		<LinearLayout
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:orientation="horizontal"
+			android:gravity="center"
+			android:id="@+id/addserverLinearLayout1">
+
+			<TextView
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_width="wrap_content"
+				android:text="@string/IP"
+				android:width="48dp"/>
+
+			<EditText
+			    android:id="@+id/EditText_IP"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:ems="10"
+			    android:hint="@string/IP" />
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:orientation="horizontal"
+			android:gravity="center"
+			android:id="@+id/addserverLinearLayout2">
+
+			<TextView
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:layout_width="wrap_content"
+				android:text="@string/Port"
+				android:width="48dp"/>
+
+			<EditText
+				android:layout_height="wrap_content"
+				android:inputType="number"
+				android:layout_width="match_parent"
+				android:ems="10"
+				android:id="@+id/EditText_Port"
+				android:hint="@string/Port"
+				android:text="@string/Port2"/>
+
+		</LinearLayout>
+</LinearLayout>
+
