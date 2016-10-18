@@ -4,6 +4,7 @@ import com.github.xzzpig.pigapi.json.JSONObject;
 import com.github.xzzpig.pigservermanager.datas.ServerLog;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -58,7 +59,11 @@ public class ConsoleActivity extends Activity {
 				JSONObject json = new JSONObject();
 				json.accumulate("command","command");
 				json.accumulate("cmd", cmd);
-				Vars.client.send(json.toString());
+				Intent intent = new Intent();
+				intent.setAction(getString(R.string.ClientServiceBC));
+				intent.putExtra("command", "senddata");
+				intent.putExtra("data", json.toString());
+				sendBroadcast(intent);
 			}
 		});
 	}

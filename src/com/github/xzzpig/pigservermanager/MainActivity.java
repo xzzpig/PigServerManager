@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
 	public static CheckBox checkBox_savepass;
 	public static Handler loginHandler;
 	public Builder builder;
+	public ServiceConnection serviceconnection;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +97,7 @@ public class MainActivity extends Activity {
 				Log.d("PSM",getString(R.string.clientservice));
 				intent.putExtra("command","login");
 				startService(intent);
-				bindService(intent, new ServiceConnection() {
+				serviceconnection =  new ServiceConnection() {
 					@Override
 					public void onServiceDisconnected(ComponentName name) {
 					}
@@ -115,7 +116,8 @@ public class MainActivity extends Activity {
 //							showToast(binder_login.error);
 //						}
 					}
-				}, Service.BIND_AUTO_CREATE);
+				};
+				bindService(intent,serviceconnection, Service.BIND_AUTO_CREATE);
 				/*
 				new Thread(new Runnable() {
 					@Override
@@ -334,5 +336,6 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		Log.d("PSM","onDestory1");
+		unbindService(serviceconnection);
 	}
 }

@@ -15,7 +15,7 @@ public class Vars {
 	public static SharedPreferences.Editor editor;
 	public static PigData data;
 	public static Toast lastToast;
-	public static Client client;
+	//public static Client client;
 	public static String ip,port,id,pass;
 	public static ServerInfo serverInfo;
 	public static List<ServerLog> logs = new ArrayList<>();

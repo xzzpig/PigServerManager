@@ -41,10 +41,18 @@ public class InnerActivity extends Activity {
 		});
 		JSONObject json = new JSONObject();
 		json.accumulate("command", "serverInfo");
-		Vars.client.send(json.toString());
+		Intent intent = new Intent();
+		intent.setAction(getString(R.string.ClientServiceBC));
+		intent.putExtra("command", "senddata");
+		intent.putExtra("data", json.toString());
+		sendBroadcast(intent);
 		json = new JSONObject();
 		json.accumulate("command", "oldLog");
-		Vars.client.send(json.toString());
+		intent = new Intent();
+		intent.setAction(getString(R.string.ClientServiceBC));
+		intent.putExtra("command", "senddata");
+		intent.putExtra("data", json.toString());
+		sendBroadcast(intent);
 	}
 	
 	@Override

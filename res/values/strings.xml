@@ -13,5 +13,6 @@
     <string name="Save">保存</string>
     <string name="IP">IP</string>
     <string name="clientservice">com.github.xzzpig.psm.clientservice</string>
+    <string name="ClientServiceBC">com.github.xzzpig.action.clientservicebc</string>
 
 </resources>
