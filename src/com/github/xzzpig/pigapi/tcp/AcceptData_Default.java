@@ -9,8 +9,8 @@ import com.github.xzzpig.pigapi.customevent.ServerDataReachEvent;
 import com.github.xzzpig.pigapi.event.Event;
 
 public class AcceptData_Default extends AcceptData {
-	public static int SIZE = 1024*1024;
-	
+	public static int SIZE = 1024 * 1024;
+
 	Socket s;
 	private Client c;
 

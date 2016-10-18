@@ -56,10 +56,9 @@ public class TString {
 			if (sb.toString().equalsIgnoreCase("["))
 				sb.append(',');
 			sb.replace(sb.length() - 1, sb.length(), "]");
-		}else if (object instanceof byte[]) {
+		} else if (object instanceof byte[]) {
 			sb.append(new String((byte[]) object));
-		}
-		else {
+		} else {
 			sb.append(object);
 		}
 		return sb.toString();

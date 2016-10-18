@@ -18,7 +18,7 @@ import java.util.jar.JarFile;
 public class TClass {
 	public static List<String> dirs = new ArrayList<String>();
 	public static ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-	
+
 	public static TData run(TRunnable tr, TData data) {
 		return tr.run(data);
 	}
@@ -67,8 +67,7 @@ public class TClass {
 				File[] classFiles = path.listFiles(new FileFilter() {
 					@Override
 					public boolean accept(File pathname) {
-						return pathname.isDirectory()
-								|| pathname.getName().endsWith(".class");
+						return pathname.isDirectory() || pathname.getName().endsWith(".class");
 					}
 				});
 				for (File subFile : classFiles) {
@@ -78,8 +77,7 @@ public class TClass {
 						if (clazzCount++ == 0) {
 							Method method = null;
 							try {
-								method = URLClassLoader.class
-										.getDeclaredMethod("addURL", URL.class);
+								method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
 							} catch (NoSuchMethodException | SecurityException e1) {
 								Debuger.print(e1);
 								return;
@@ -93,11 +91,8 @@ public class TClass {
 								URLClassLoader classLoader = (URLClassLoader) TClass.classLoader;
 								// 将当前类路径加入到类加载器中
 								try {
-									method.invoke(classLoader, clazzPath
-											.toURI().toURL());
-								} catch (IllegalAccessException
-										| IllegalArgumentException
-										| InvocationTargetException
+									method.invoke(classLoader, clazzPath.toURI().toURL());
+								} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 										| MalformedURLException e) {
 									Debuger.print(e);
 									return;
@@ -108,8 +103,7 @@ public class TClass {
 						}
 						// 文件名称
 						String className = subFile.getAbsolutePath();
-						className = className.substring(clazzPathLen,
-								className.length() - 6);
+						className = className.substring(clazzPathLen, className.length() - 6);
 						className = className.replace(File.separatorChar, '.');
 						// 加载Class类
 						try {
@@ -141,8 +135,7 @@ public class TClass {
 			// 对于jar文件，可以理解为一个存放class文件的文件夹
 			Method method = null;
 			try {
-				method = URLClassLoader.class.getDeclaredMethod("addURL",
-						URL.class);
+				method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
 			} catch (NoSuchMethodException | SecurityException e1) {
 				Debuger.print(e1);
 				return;
@@ -178,7 +171,7 @@ public class TClass {
 	public static void addDir(String dir) {
 		dirs.add(dir);
 	}
-	
+
 	public static List<Class<?>> getClass(String packageName) {
 		List<Class<?>> r = new ArrayList<Class<?>>();
 		for (String cl : TClass.getClassName(packageName)) {
@@ -213,8 +206,7 @@ public class TClass {
 	 *            是否遍历子包
 	 * @return 类的完整名称
 	 */
-	public static List<String> getClassName(String packageName,
-			boolean childPackage) {
+	public static List<String> getClassName(String packageName, boolean childPackage) {
 		List<String> fileNames = null;
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		String packagePath = packageName.replace(".", "/");
@@ -222,14 +214,12 @@ public class TClass {
 		if (url != null) {
 			String type = url.getProtocol();
 			if (type.equals("file")) {
-				fileNames = getClassNameByFile(url.getPath(), null,
-						childPackage);
+				fileNames = getClassNameByFile(url.getPath(), null, childPackage);
 			} else if (type.equals("jar")) {
 				fileNames = getClassNameByJar(url.getPath(), childPackage);
 			}
 		} else {
-			fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(),
-					packagePath, childPackage);
+			fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
 		}
 		return fileNames;
 	}
@@ -245,22 +235,19 @@ public class TClass {
 	 *            是否遍历子包
 	 * @return 类的完整名称
 	 */
-	private static List<String> getClassNameByFile(String filePath,
-			List<String> className, boolean childPackage) {
+	private static List<String> getClassNameByFile(String filePath, List<String> className, boolean childPackage) {
 		List<String> myClassName = new ArrayList<String>();
 		File file = new File(filePath);
 		File[] childFiles = file.listFiles();
 		for (File childFile : childFiles) {
 			if (childFile.isDirectory()) {
 				if (childPackage) {
-					myClassName.addAll(getClassNameByFile(childFile.getPath(),
-							myClassName, childPackage));
+					myClassName.addAll(getClassNameByFile(childFile.getPath(), myClassName, childPackage));
 				}
 			} else {
 				String childFilePath = childFile.getPath();
 				if (childFilePath.endsWith(".class")) {
-					childFilePath = childFilePath.substring(
-							childFilePath.indexOf("\\classes") + 9,
+					childFilePath = childFilePath.substring(childFilePath.indexOf("\\classes") + 9,
 							childFilePath.lastIndexOf("."));
 					childFilePath = childFilePath.replace("\\", ".");
 					myClassName.add(childFilePath);
@@ -281,8 +268,7 @@ public class TClass {
 	 * @return 类的完整名称
 	 */
 	@SuppressWarnings("resource")
-	private static List<String> getClassNameByJar(String jarPath,
-			boolean childPackage) {
+	private static List<String> getClassNameByJar(String jarPath, boolean childPackage) {
 		List<String> myClassName = new ArrayList<String>();
 		String[] jarInfo = jarPath.split("!");
 		String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
@@ -296,8 +282,7 @@ public class TClass {
 				if (entryName.endsWith(".class")) {
 					if (childPackage) {
 						if (entryName.startsWith(packagePath)) {
-							entryName = entryName.replace("/", ".").substring(
-									0, entryName.lastIndexOf("."));
+							entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
 							myClassName.add(entryName);
 						}
 					} else {
@@ -309,8 +294,7 @@ public class TClass {
 							myPackagePath = entryName;
 						}
 						if (myPackagePath.equals(packagePath)) {
-							entryName = entryName.replace("/", ".").substring(
-									0, entryName.lastIndexOf("."));
+							entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
 							myClassName.add(entryName);
 						}
 					}
@@ -333,8 +317,7 @@ public class TClass {
 	 *            是否遍历子包
 	 * @return 类的完整名称
 	 */
-	private static List<String> getClassNameByJars(URL[] urls,
-			String packagePath, boolean childPackage) {
+	private static List<String> getClassNameByJars(URL[] urls, String packagePath, boolean childPackage) {
 		List<String> myClassName = new ArrayList<String>();
 		if (urls != null) {
 			for (int i = 0; i < urls.length; i++) {

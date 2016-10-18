@@ -42,7 +42,7 @@ public class ConsoleActivity extends Activity {
 			public void handleMessage(Message msg) {
 				if (msg.what == HandleMessage.GetNewLog.ordinal()) {
 					loadContents();
-					Log.d("PSM",msg.obj.toString());
+					Log.d("PSM", msg.obj.toString());
 					logs.append("\n" + msg.obj);
 					textView_Log.setText(logs.toString());
 					textView_Log.postInvalidate();
@@ -57,7 +57,7 @@ public class ConsoleActivity extends Activity {
 				String cmd = editText_Command.getText().toString();
 				editText_Command.setText("");
 				JSONObject json = new JSONObject();
-				json.accumulate("command","command");
+				json.accumulate("command", "command");
 				json.accumulate("cmd", cmd);
 				Intent intent = new Intent();
 				intent.setAction(getString(R.string.ClientServiceBC));
@@ -72,37 +72,41 @@ public class ConsoleActivity extends Activity {
 		textView_Log = (TextView) findViewById(R.id.TextView_Log);
 		editText_Command = (EditText) findViewById(R.id.EditText_Command);
 		button_send = (Button) findViewById(R.id.Button_Send);
-		//scrollView_Log = (ScrollView) findViewById(R.id.ScrollView_Log);
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.d("PSM","onStart3");
+		Log.d("PSM", "onStart3");
 	}
+
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		Log.d("PSM","onRestart3");
+		Log.d("PSM", "onRestart3");
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d("PSM","onResume3");
+		Log.d("PSM", "onResume3");
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.d("PSM","onPause3");
+		Log.d("PSM", "onPause3");
 	}
+
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.d("PSM","onStop3");
+		Log.d("PSM", "onStop3");
 	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		Log.d("PSM","onDestory3");
+		Log.d("PSM", "onDestory3");
 	}
 }

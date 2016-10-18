@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Debuger {
 	public static long time;
-	
+
 	public static PrintStream out = System.err;
 
 	public static boolean debug = false;

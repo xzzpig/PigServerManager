@@ -24,8 +24,7 @@ public class Server {
 					try {
 						Client client = new Client(ss.accept());
 						clients.add(client);
-						Event.callEvent(new ClientConnectEvent(Server.this,
-								client));
+						Event.callEvent(new ClientConnectEvent(Server.this, client));
 						System.out.println("新客户端连接");
 					} catch (Exception e) {
 						System.out.println("服务器接受客户端错误");

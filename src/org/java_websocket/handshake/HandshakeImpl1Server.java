@@ -17,13 +17,12 @@ public class HandshakeImpl1Server extends HandshakedataImpl1 implements ServerHa
 		return httpstatus;
 	}
 
-	public void setHttpStatusMessage( String message ) {
+	public void setHttpStatusMessage(String message) {
 		this.httpstatusmessage = message;
 	}
 
-	public void setHttpStatus( short status ) {
+	public void setHttpStatus(short status) {
 		httpstatus = status;
 	}
-
 
 }

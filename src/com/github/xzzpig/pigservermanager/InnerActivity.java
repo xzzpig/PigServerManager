@@ -17,16 +17,16 @@ public class InnerActivity extends Activity {
 	public static TextView textView_ServerInfo;
 	public static Button button_Console;
 	public static Handler handler;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.inner);
 		loadContents();
-		handler = new Handler(){
+		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				if (msg.what==HandleMessage.GetServerInfo.ordinal()) {
+				if (msg.what == HandleMessage.GetServerInfo.ordinal()) {
 					loadContents();
 					textView_ServerInfo.setText(Vars.serverInfo.toString());
 				}
@@ -35,7 +35,7 @@ public class InnerActivity extends Activity {
 		button_Console.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(InnerActivity.this,ConsoleActivity.class);
+				Intent intent = new Intent(InnerActivity.this, ConsoleActivity.class);
 				startActivity(intent);
 			}
 		});
@@ -54,51 +54,49 @@ public class InnerActivity extends Activity {
 		intent.putExtra("data", json.toString());
 		sendBroadcast(intent);
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.d("PSM","onStart2");
+		Log.d("PSM", "onStart2");
 	}
+
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		Log.d("PSM","onRestart2");
+		Log.d("PSM", "onRestart2");
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d("PSM","onResume2");
+		Log.d("PSM", "onResume2");
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.d("PSM","onPause2");
+		Log.d("PSM", "onPause2");
 	}
+
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.d("PSM","onStop2");
+		Log.d("PSM", "onStop2");
 	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		Log.d("PSM","onDestory2");
+		Log.d("PSM", "onDestory2");
 		/*
-		Vars.client.close();
-		Vars.client =null;
-		Vars.data=null;
-		Vars.id=null;
-		Vars.ip=null;
-		Vars.lastToast=null;
-		Vars.logs = new ArrayList<>();
-		Vars.pass=null;
-		Vars.port=null;
-		Vars.serverInfo=null;
+		 * Vars.client.close(); Vars.client =null; Vars.data=null; Vars.id=null;
+		 * Vars.ip=null; Vars.lastToast=null; Vars.logs = new ArrayList<>();
+		 * Vars.pass=null; Vars.port=null; Vars.serverInfo=null;
 		 */
 	}
-	
-	private void loadContents(){
+
+	private void loadContents() {
 		textView_ServerInfo = (TextView) findViewById(R.id.TextView_ServerInfo);
 		button_Console = (Button) findViewById(R.id.Button_Console);
 	}

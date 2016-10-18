@@ -9,14 +9,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
-import android.app.Service;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -36,13 +32,14 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	public static Spinner spinner_Server;
-	public static EditText editText_ID, editText_Password;
-	public static Button button_Login, button_AddServer;
-	public static CheckBox checkBox_savepass;
 	public static Handler loginHandler;
+	public Spinner spinner_Server;
+	public EditText editText_ID, editText_Password;
+	public Button button_Login, button_AddServer;
+	public CheckBox checkBox_savepass;
 	public Builder builder;
-	public ServiceConnection serviceconnection;
+	private ProgressDialog loadingDialog;
+	private String ip, port, id, pass;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +55,14 @@ public class MainActivity extends Activity {
 		spinner_Server.setSelection(Vars.data.getInt("ip_last"));
 		addEventForSpinner_Server();
 		button_Login.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
-				final ProgressDialog loadingDialog=ProgressDialog.show(MainActivity.this, "Loading","正在登录");
+				loadingDialog = ProgressDialog.show(MainActivity.this, "Loading", "正在登录");
 				loadingDialog.setCancelable(true);
 				loadingDialog.setCanceledOnTouchOutside(true);
-				String id = editText_ID.getText().toString(), pass = editText_Password.getText().toString();
+				id = editText_ID.getText().toString();
+				pass = editText_Password.getText().toString();
 				if (id.equalsIgnoreCase("")) {
 					showToast("ID不能为空");
 					loadingDialog.dismiss();
@@ -74,100 +73,34 @@ public class MainActivity extends Activity {
 					loadingDialog.dismiss();
 					return;
 				}
-				Vars.data.set("id",id);
-				if (checkBox_savepass.isChecked()){
+				Vars.data.set("id", id);
+				if (checkBox_savepass.isChecked()) {
 					Vars.data.set("savepass", true);
-					Vars.data.set("pass",pass);
-				}else {
+					Vars.data.set("pass", pass);
+				} else {
 					Vars.data.set("savepass", false);
 					Vars.data.remove("pass");
 				}
 				Voids.saveData();
-				String[] ip_p = ((TextView)spinner_Server.getSelectedView()).getText().toString().split(":");
-				if(ip_p.length<2){
+				String[] ip_p = ((TextView) spinner_Server.getSelectedView()).getText().toString().split(":");
+				if (ip_p.length < 2) {
 					showToast("你所选的服务器IP不符合格式");
 					loadingDialog.dismiss();
 					return;
 				}
-				Vars.ip = ip_p[0];
-				Vars.port = ip_p[1];
-				Vars.id = id;
-				Vars.pass = pass;
-				Intent intent = new Intent(MainActivity.this,ClientService.class);
-				Log.d("PSM",getString(R.string.clientservice));
-				intent.putExtra("command","login");
+				ip = ip_p[0];
+				port = ip_p[1];
+				Intent intent = new Intent(MainActivity.this, ClientService.class);
+				Log.d("PSM", getString(R.string.clientservice));
 				startService(intent);
-				serviceconnection =  new ServiceConnection() {
-					@Override
-					public void onServiceDisconnected(ComponentName name) {
-					}
-					
-					@Override
-					public void onServiceConnected(ComponentName name, IBinder service) {
-//						LoginBinder binder_login = (LoginBinder) service;
-//						while (!binder_login.allfinish) {}
-//						Log.d("PSM",binder_login.getClass().toString());
-//						if(binder_login.login_success){
-//							Intent intent = new Intent(MainActivity.this,InnerActivity.class);
-//							startActivity(intent);
-//							MainActivity.this.finish();
-//						}
-//						else {
-//							showToast(binder_login.error);
-//						}
-					}
-				};
-				bindService(intent,serviceconnection, Service.BIND_AUTO_CREATE);
-				/*
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							InetAddress address = InetAddress.getByName(ip);
-							Vars.ip=address.getHostAddress();
-						} catch (UnknownHostException e) {
-							Vars.ip="error";
-							showToast("无法识别该IP(域名解析错误)");
-							loadingDialog.dismiss();
-							return;
-						}
-					}
-				}).start();
-				long stop = System.currentTimeMillis()+5000;
-				while (Vars.ip==null&&System.currentTimeMillis()<stop) {}
-				if(Vars.ip==null){
-					showToast("域名解析超时");
-					loadingDialog.dismiss();
-					return;
-				}else if(Vars.ip.equalsIgnoreCase("error")){
-					loadingDialog.dismiss();
-					return;
-				}
-				Vars.port = port;
-				Vars.id = id;
-				Vars.pass = pass;
-				if(Vars.client!=null&&Vars.client.isOpen()){
-					Intent intent = new Intent(MainActivity.this,InnerActivity.class);
-					startActivity(intent);
-					MainActivity.this.finish();
-					return;
-				}
-				Vars.client = new Client(URI.create("ws://"+Vars.ip+":"+port));
-				Event.registListener(Vars.client);
-				loadingDialog.setMessage("正在连接服务器");
-				Vars.client.connect();
-				while ((!Vars.client.isOpen())&&loadingDialog.isShowing()) {}
-				loadingDialog.setMessage("开始登录");
-				while (Client.reason==null) {}
-				loadingDialog.dismiss();
-				if(!Client.login){
-					showToast(Client.reason);
-					return;
-				}
-				Intent intent = new Intent(MainActivity.this,InnerActivity.class);
-				startActivity(intent);
-				MainActivity.this.finish();
-				*/
+				intent = new Intent();
+				intent.setAction(getString(R.string.ClientServiceBC));
+				intent.putExtra("command", "login");
+				intent.putExtra("ip", ip);
+				intent.putExtra("port", port);
+				intent.putExtra("id", id);
+				intent.putExtra("pass", pass);
+				sendBroadcast(intent);
 			}
 		});
 		button_Login.setOnLongClickListener(new OnLongClickListener() {
@@ -176,28 +109,38 @@ public class MainActivity extends Activity {
 				return true;
 			}
 		});
-		if(Vars.data.contianKey("id"))
+		if (Vars.data.contianKey("id"))
 			editText_ID.setText(Vars.data.getString("id"));
-		if(Vars.data.contianKey("pass"))
+		if (Vars.data.contianKey("pass"))
 			editText_Password.setText(Vars.data.getString("pass"));
-		if(Vars.data.contianKey("savepass"))
+		if (Vars.data.contianKey("savepass"))
 			checkBox_savepass.setChecked(Vars.data.getBoolean("savepass"));
-		loginHandler = new Handler(){
+		loginHandler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				if (msg.what==HandleMessage.LoginMSG.ordinal()) {
+				if (msg.what == HandleMessage.LoginMSG.ordinal()) {
 					Bundle bundle = msg.getData();
-					if(bundle.getBoolean("login_success")){
-						Intent intent = new Intent(MainActivity.this,InnerActivity.class);
+					loadingDialog.dismiss();
+					if (bundle.getBoolean("login_success")) {
+						Intent intent = new Intent(MainActivity.this, InnerActivity.class);
 						startActivity(intent);
 						MainActivity.this.finish();
-					}else {
+					} else {
 						showToast(bundle.getString("error"));
 					}
+				} else if (msg.what == HandleMessage.CanLogin.ordinal()) {
+					Intent intent = new Intent();
+					intent.setAction(getString(R.string.ClientServiceBC));
+					intent.putExtra("command", "login");
+					intent.putExtra("ip", ip);
+					intent.putExtra("port", port);
+					intent.putExtra("id", id);
+					intent.putExtra("pass", pass);
+					sendBroadcast(intent);
 				}
 			}
 		};
-		Log.d("PSM","Data:\n"+Vars.data.getPrintString());
+		Log.d("PSM", "Data:\n" + Vars.data.getPrintString());
 	}
 
 	private void addEventForSpinner_Server() {
@@ -228,7 +171,7 @@ public class MainActivity extends Activity {
 		spinner_Server.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
-				if(spinner_Server.getSelectedItemPosition()<0)
+				if (spinner_Server.getSelectedItemPosition() < 0)
 					return false;
 				List<String> ips = Vars.data.getList("ip");
 				ips.remove(spinner_Server.getSelectedItemPosition());
@@ -248,7 +191,7 @@ public class MainActivity extends Activity {
 		button_AddServer = (Button) findViewById(R.id.Button_AddServer);
 		checkBox_savepass = (CheckBox) findViewById(R.id.CheckBox_SavePass);
 	}
-	
+
 	class AddServerClick implements OnClickListener {
 		@SuppressLint("InflateParams")
 		@Override
@@ -298,44 +241,48 @@ public class MainActivity extends Activity {
 			return Vars.data.getList("ip").size();
 		}
 	}
-	
+
 	private void showToast(String message) {
 		if (Vars.lastToast != null)
 			Vars.lastToast.cancel();
 		Vars.lastToast = Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT);
 		Vars.lastToast.show();
-		
+
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.d("PSM","onStart1");
+		Log.d("PSM", "onStart1");
 	}
+
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		Log.d("PSM","onRestart1");
+		Log.d("PSM", "onRestart1");
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d("PSM","onResume1");
+		Log.d("PSM", "onResume1");
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.d("PSM","onPause1");
+		Log.d("PSM", "onPause1");
 	}
+
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.d("PSM","onStop1");
+		Log.d("PSM", "onStop1");
 	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		Log.d("PSM","onDestory1");
-		unbindService(serviceconnection);
+		Log.d("PSM", "onDestory1");
 	}
 }

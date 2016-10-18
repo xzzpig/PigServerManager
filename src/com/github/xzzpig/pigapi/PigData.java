@@ -66,8 +66,7 @@ public class PigData implements Serializable {
 				} else if (c == ';') {
 					value = sb.toString();
 					sb = new StringBuffer();
-					value = value.replace('：', ':').replace('；', ';')
-							.replace('｛', '{').replace('｝', '}');
+					value = value.replace('：', ':').replace('；', ';').replace('｛', '{').replace('｝', '}');
 					this.data.put(key, value);
 					continue;
 				} else if (c == '{') {
@@ -94,8 +93,7 @@ public class PigData implements Serializable {
 			return (this.data.containsKey(key));
 		String thiskey = keys[0];
 		Object thisvalue;
-		if ((!this.data.containsKey(thiskey))
-				|| (!(this.data.get(thiskey) instanceof PigData)))
+		if ((!this.data.containsKey(thiskey)) || (!(this.data.get(thiskey) instanceof PigData)))
 			return false;
 		else
 			thisvalue = this.data.get(thiskey);
@@ -112,8 +110,7 @@ public class PigData implements Serializable {
 				return "";
 		String thiskey = keys[0];
 		Object thisvalue;
-		if ((!this.data.containsKey(thiskey))
-				|| (!(this.data.get(thiskey) instanceof PigData)))
+		if ((!this.data.containsKey(thiskey)) || (!(this.data.get(thiskey) instanceof PigData)))
 			thisvalue = new PigData(this);
 		else
 			thisvalue = this.data.get(thiskey);
@@ -206,8 +203,7 @@ public class PigData implements Serializable {
 			list = new ArrayList<String>();
 			if (!(str.startsWith("[") && str.endsWith("]")))
 				return list;
-			String[] strs = str.substring(1, str.length() - 1)
-					.replace(',', '，').split("，");
+			String[] strs = str.substring(1, str.length() - 1).replace(',', '，').split("，");
 			for (String string : strs)
 				list.add(string);
 		}
@@ -251,15 +247,12 @@ public class PigData implements Serializable {
 			sb.append(beforeBuffer + entry.getKey());
 			Object value = entry.getValue();
 			if (value instanceof PigData)
-				sb.append('{')
-				.append("\n")
-				.append(((PigData) value).getPrintString(before + 2)
-						+ beforeBuffer).append('}').append("\n");
+				sb.append('{').append("\n").append(((PigData) value).getPrintString(before + 2) + beforeBuffer)
+						.append('}').append("\n");
 			else
-				sb.append(':')
-				.append(TString.toString(value).replace(':', '_')
-						.replace(';', '_').replace('{', '_')
-						.replace('}', '_')).append(';').append("\n");
+				sb.append(':').append(
+						TString.toString(value).replace(':', '_').replace(';', '_').replace('{', '_').replace('}', '_'))
+						.append(';').append("\n");
 		}
 		return sb.toString();
 	}
@@ -301,8 +294,7 @@ public class PigData implements Serializable {
 			}
 		String thiskey = keys[0];
 		Object thisvalue;
-		if ((!this.data.containsKey(thiskey))
-				|| (!(this.data.get(thiskey) instanceof PigData)))
+		if ((!this.data.containsKey(thiskey)) || (!(this.data.get(thiskey) instanceof PigData)))
 			thisvalue = new PigData(this);
 		else
 			thisvalue = this.data.get(thiskey);
@@ -333,8 +325,7 @@ public class PigData implements Serializable {
 		}
 		String thiskey = keys[0];
 		Object thisvalue;
-		if ((!this.data.containsKey(thiskey))
-				|| (!(this.data.get(thiskey) instanceof PigData)))
+		if ((!this.data.containsKey(thiskey)) || (!(this.data.get(thiskey) instanceof PigData)))
 			return this;
 		else
 			thisvalue = this.data.get(thiskey);
@@ -363,8 +354,7 @@ public class PigData implements Serializable {
 		}
 		String thiskey = keys[0];
 		Object thisvalue;
-		if ((!this.data.containsKey(thiskey))
-				|| (!(this.data.get(thiskey) instanceof PigData))) {
+		if ((!this.data.containsKey(thiskey)) || (!(this.data.get(thiskey) instanceof PigData))) {
 			thisvalue = new PigData(this);
 			this.data.put(thiskey, thisvalue);
 		} else
@@ -383,10 +373,9 @@ public class PigData implements Serializable {
 			if (value instanceof PigData)
 				sb.append('{').append(TString.toString(value)).append('}');
 			else
-				sb.append(':')
-				.append(TString.toString(value).replace(':', '：')
-						.replace(';', '；').replace('{', '｛')
-						.replace('}', '｝')).append(';');
+				sb.append(':').append(
+						TString.toString(value).replace(':', '：').replace(';', '；').replace('{', '｛').replace('}', '｝'))
+						.append(';');
 		}
 		return sb.toString();
 	}

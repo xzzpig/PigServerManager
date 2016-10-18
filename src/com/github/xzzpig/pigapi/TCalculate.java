@@ -17,8 +17,7 @@ public class TCalculate {
 
 	public static double getResult(String expression) {
 		// String expression = "1+5*(2+1)";
-		Pattern entryOfExpression = Pattern
-				.compile("[0-9]+(\\.[0-9]+)?|\\(|\\)|\\+|-|\\*|/");
+		Pattern entryOfExpression = Pattern.compile("[0-9]+(\\.[0-9]+)?|\\(|\\)|\\+|-|\\*|/");
 		Deque<Object> stack = new LinkedList<Object>(); // 运算过程中要使用的栈
 		List<Object> list = new LinkedList<Object>(); // 运算过程中要使用的列表
 		// 用正则式分析表达式
@@ -31,8 +30,7 @@ public class TCalculate {
 			} else {
 				// 如果是运算符,根据不同情况处理
 				OPNode opn = new OPNode(nodeString);
-				int peekLevel = (stack.peek() == null) ? 0 : ((OPNode) stack
-						.peek()).level;
+				int peekLevel = (stack.peek() == null) ? 0 : ((OPNode) stack.peek()).level;
 				if (opn.level > peekLevel) {
 					stack.push(opn);
 				} else {

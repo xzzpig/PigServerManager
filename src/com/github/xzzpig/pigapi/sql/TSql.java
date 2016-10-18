@@ -27,8 +27,8 @@ public abstract class TSql {
 
 	public abstract void close();
 
-	public abstract TSql connect(String host, int port, String username,
-			String password, String database) throws Exception;
+	public abstract TSql connect(String host, int port, String username, String password, String database)
+			throws Exception;
 
 	public Connection getConn() {
 		return conn;

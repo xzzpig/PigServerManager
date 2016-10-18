@@ -20,8 +20,8 @@ public class ServerDataReachEvent extends Event {
 	public Object getData() {
 		return data;
 	}
-	
-	public PigData getPigData(){
+
+	public PigData getPigData() {
 		return new PigData(data.toString());
 	}
 }

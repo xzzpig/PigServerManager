@@ -105,11 +105,11 @@ public class TDownload {
 							break;
 						downloadsize += length;
 						out.write(buffer, 0, length);
-						if (print){
+						if (print) {
 							for (int j = 0; j < (getPrecent() / 10 - i); j++) {
-								System.out.print("["+i+"]");
+								System.out.print("[" + i + "]");
 							}
-							i=(short) (getPrecent()/10);
+							i = (short) (getPrecent() / 10);
 						}
 					}
 					System.out.println();

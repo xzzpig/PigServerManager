@@ -36,8 +36,7 @@ public class TMySql extends TSql {
 			}
 			Debuger.print("MYSQL所需驱动JDBC加载失败,将自动下载到" + jdbc.getAbsolutePath());
 			try {
-				TDownload download = new TDownload(
-						"http://heanet.dl.sourceforge.net/project/pigtest0/jdbc.jar");
+				TDownload download = new TDownload("http://heanet.dl.sourceforge.net/project/pigtest0/jdbc.jar");
 				download.isBarPrint(true);
 				download.start(jdbc);
 				while (!download.isFinished()) {
@@ -51,10 +50,8 @@ public class TMySql extends TSql {
 	}
 
 	@Override
-	public TMySql connect(String host, int port, String username,
-			String password, String database) throws Exception {
-		String url = "jdbc:mysql://" + host + ":3306/" + database + "?"
-				+ "user=" + username + "&password=" + password
+	public TMySql connect(String host, int port, String username, String password, String database) throws Exception {
+		String url = "jdbc:mysql://" + host + ":3306/" + database + "?" + "user=" + username + "&password=" + password
 				+ "&useUnicode=true&characterEncoding=UTF8";
 		conn = DriverManager.getConnection(url);
 		stmt = conn.createStatement();
