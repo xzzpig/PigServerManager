@@ -12,5 +12,6 @@
     <string name="Port2">10727</string>
     <string name="Save">保存</string>
     <string name="IP">IP</string>
+    <string name="clientservice">com.github.xzzpig.psm.clientservice</string>
 
 </resources>

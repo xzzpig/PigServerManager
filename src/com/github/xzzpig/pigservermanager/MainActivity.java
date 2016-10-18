@@ -1,21 +1,23 @@
 package com.github.xzzpig.pigservermanager;
 
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import com.github.xzzpig.pigapi.PigData;
-import com.github.xzzpig.pigapi.event.Event;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +40,7 @@ public class MainActivity extends Activity {
 	public static EditText editText_ID, editText_Password;
 	public static Button button_Login, button_AddServer;
 	public static CheckBox checkBox_savepass;
+	public static Handler loginHandler;
 	public Builder builder;
 
 	@Override
@@ -56,10 +59,9 @@ public class MainActivity extends Activity {
 		button_Login.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				final ProgressDialog loadingDialog=ProgressDialog.show(MainActivity.this, "Loading","正在解析服务器地址");
-				//loadingDialog.setCancelable(true);
-				//loadingDialog.setCanceledOnTouchOutside(true);
-				//loadingDialog.show();
+				final ProgressDialog loadingDialog=ProgressDialog.show(MainActivity.this, "Loading","正在登录");
+				loadingDialog.setCancelable(true);
+				loadingDialog.setCanceledOnTouchOutside(true);
 				String id = editText_ID.getText().toString(), pass = editText_Password.getText().toString();
 				if (id.equalsIgnoreCase("")) {
 					showToast("ID不能为空");
@@ -86,8 +88,35 @@ public class MainActivity extends Activity {
 					loadingDialog.dismiss();
 					return;
 				}
-				final String ip = ip_p[0];
-				String port = ip_p[1];
+				Vars.ip = ip_p[0];
+				Vars.port = ip_p[1];
+				Vars.id = id;
+				Vars.pass = pass;
+				Intent intent = new Intent(MainActivity.this,ClientService.class);
+				Log.d("PSM",getString(R.string.clientservice));
+				intent.putExtra("command","login");
+				startService(intent);
+				bindService(intent, new ServiceConnection() {
+					@Override
+					public void onServiceDisconnected(ComponentName name) {
+					}
+					
+					@Override
+					public void onServiceConnected(ComponentName name, IBinder service) {
+//						LoginBinder binder_login = (LoginBinder) service;
+//						while (!binder_login.allfinish) {}
+//						Log.d("PSM",binder_login.getClass().toString());
+//						if(binder_login.login_success){
+//							Intent intent = new Intent(MainActivity.this,InnerActivity.class);
+//							startActivity(intent);
+//							MainActivity.this.finish();
+//						}
+//						else {
+//							showToast(binder_login.error);
+//						}
+					}
+				}, Service.BIND_AUTO_CREATE);
+				/*
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -136,6 +165,7 @@ public class MainActivity extends Activity {
 				Intent intent = new Intent(MainActivity.this,InnerActivity.class);
 				startActivity(intent);
 				MainActivity.this.finish();
+				*/
 			}
 		});
 		button_Login.setOnLongClickListener(new OnLongClickListener() {
@@ -150,6 +180,21 @@ public class MainActivity extends Activity {
 			editText_Password.setText(Vars.data.getString("pass"));
 		if(Vars.data.contianKey("savepass"))
 			checkBox_savepass.setChecked(Vars.data.getBoolean("savepass"));
+		loginHandler = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				if (msg.what==HandleMessage.LoginMSG.ordinal()) {
+					Bundle bundle = msg.getData();
+					if(bundle.getBoolean("login_success")){
+						Intent intent = new Intent(MainActivity.this,InnerActivity.class);
+						startActivity(intent);
+						MainActivity.this.finish();
+					}else {
+						showToast(bundle.getString("error"));
+					}
+				}
+			}
+		};
 		Log.d("PSM","Data:\n"+Vars.data.getPrintString());
 	}
 
